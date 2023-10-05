@@ -1,120 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/tabhost"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:theme="@android:style/Theme.NoTitleBar"
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/blueBlock"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/holo_blue_light"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/greenBlock"
-        app:layout_constraintVertical_weight="1">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/blueLabel"
+        <TabWidget
+            android:id="@android:id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:scrollbars="vertical"
-            android:maxLines="10"
-            android:text="Не срочно"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:layout_height="wrap_content" />
 
-        <ScrollView
+        <FrameLayout
+            android:id="@android:id/tabcontent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
             <LinearLayout
-                android:id="@+id/linearLayoutBlue"
+                android:id="@+id/blueBlock"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_height="match_parent"
+                android:background="@android:color/holo_blue_light"
+                android:orientation="vertical">
 
-        </ScrollView>
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/blueLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:scrollbars="vertical"
+                    android:maxLines="10"
+                    android:text="Не срочно"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
 
-    <LinearLayout
-        android:id="@+id/greenBlock"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@android:color/holo_green_light"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/blueBlock"
-        app:layout_constraintTop_toBottomOf="@+id/yellowBlock"
-        app:layout_constraintVertical_weight="1"
-        tools:layout_editor_absoluteX="16dp">
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/greenLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:maxLines="10"
-            android:scrollbars="vertical"
-            android:text="Срочно"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+                    <LinearLayout
+                        android:id="@+id/linearLayoutBlue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                </ScrollView>
+            </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayoutGreen"
+                android:id="@+id/greenBlock"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </ScrollView>
-    </LinearLayout>
+                android:layout_height="match_parent"
+                android:background="@android:color/holo_green_light"
+                android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/yellowBlock"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/holo_orange_light"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/greenBlock"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_weight="1">
+                <TextView
+                    android:id="@+id/greenLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:maxLines="10"
+                    android:scrollbars="vertical"
+                    android:text="Срочно"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/yellowLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:scrollbars="vertical"
-            android:maxLines="10"
-            android:text="Очень срочно"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                    <LinearLayout
+                        android:id="@+id/linearLayoutGreen"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </ScrollView>
+            </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayoutYellow"
+                android:id="@+id/yellowBlock"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </ScrollView>
+                android:layout_height="match_parent"
+                android:background="@android:color/holo_orange_light"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/yellowLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:scrollbars="vertical"
+                    android:maxLines="10"
+                    android:text="Очень срочно"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutYellow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </ScrollView>
+            </LinearLayout>
+
+        </FrameLayout>
+
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</TabHost>
