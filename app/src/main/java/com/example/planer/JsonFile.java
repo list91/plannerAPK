@@ -147,6 +147,42 @@ public class JsonFile {
             e.printStackTrace();
         }
     }
+    public static void addJsonGroup(Context context, String branch, String objectType, String key, JSONObject newValue, String taskId) {
+
+        try {
+            File file = new File(context.getExternalFilesDir(null), OUT_DIR_NAME);
+            JSONObject mainJsonGroup = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                mainJsonGroup = new JSONObject(new String(Files.readAllBytes(file.toPath())));
+            }
+
+            assert mainJsonGroup != null;
+            JSONObject branchJsonGroup = mainJsonGroup.getJSONObject(branch);
+
+            JSONObject branchObjectJsonGroup = branchJsonGroup.getJSONObject(objectType);
+
+            JSONObject newJsonAttr = new JSONObject();
+            newJsonAttr.put(key, newValue);
+
+
+            if (branchObjectJsonGroup.has(taskId)){
+                JSONObject idGroup = branchObjectJsonGroup.getJSONObject(taskId);
+                idGroup.put(key, newValue);
+            } else {
+                branchObjectJsonGroup.put(taskId, newJsonAttr);
+            }
+
+            branchJsonGroup.put(objectType, branchObjectJsonGroup);
+            mainJsonGroup.put(branch, branchJsonGroup);
+
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(mainJsonGroup.toString());
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+    }
     public static JSONObject getValue(Context context, String branch, String objectType, String key) {
 
         try {
@@ -209,12 +245,14 @@ public class JsonFile {
                     JSONObject thisObject = thisBranch.getJSONObject(thisKey);
                     String date = null;
                     String time = null;
-                    if (thisObject.has("date")) {
-                        date = thisObject.getString("date");
+                    if (thisObject.has("date_time")) {
+                        JSONObject dateTime = thisObject.getJSONObject("date_time");
+                        date = dateTime.getString("date");
+                        time = dateTime.getString("time");
                     }
-                    if (thisObject.has("time")) {
-                        time = thisObject.getString("time");
-                    }
+//                    if (thisObject.has("time")) {
+//                        time = thisObject.getString("time");
+//                    }
                     String title = thisObject.getString("title");
                     String content = thisObject.getString("content");
                     String category = thisObject.getString("category");

@@ -2,6 +2,9 @@ package com.example.planer;
 
 import android.content.Context;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Objects;
 
 public class Object {
@@ -28,11 +31,16 @@ public class Object {
             typeObject = "tasks";
         }
     }
-    public void writeObject(){
+    public void writeObject() throws JSONException {
         String branch = "active";
         String id = Integer.toString(JsonFile.getLenObjects(context,branch,typeObject));
-        if (Objects.equals(typeObject, "task")){
-            JsonFile.addValue(context,branch,"date_time", typeObject, "title", title);
+        if (Objects.equals(typeObject, "tasks")){
+//            JsonFile.addValue(context,branch,"date_time", typeObject, "title", title);
+            JSONObject dataTime = new JSONObject();
+            dataTime.put("date", date);
+            dataTime.put("time", time);
+            JsonFile.addJsonGroup(context,branch, typeObject, "date_time", dataTime, id);
+//            JsonFile.addValue(context,branch, typeObject, "date_time", date, id);
         }
 //         "1";
         JsonFile.addValue(context,branch, typeObject, "title", title, id);
