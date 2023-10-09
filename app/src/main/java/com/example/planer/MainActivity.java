@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,20 +62,20 @@ public class MainActivity extends AppCompatActivity {
 
 // Создание вкладки "Не срочно"
         tabSpec = tabHost.newTabSpec("Tab1");
-        tabSpec.setIndicator("Не срочно");
-        tabSpec.setContent(R.id.blueBlock);
+        tabSpec.setIndicator("<img>");
+        tabSpec.setContent(R.id.startTab);
         tabHost.addTab(tabSpec);
 
 // Создание вкладки "Срочно"
         tabSpec = tabHost.newTabSpec("Tab2");
-        tabSpec.setIndicator("Срочно");
-        tabSpec.setContent(R.id.greenBlock);
+        tabSpec.setIndicator("Задачи");
+        tabSpec.setContent(R.id.taskTab);
         tabHost.addTab(tabSpec);
 
 // Создание вкладки "Очень срочно"
         tabSpec = tabHost.newTabSpec("Tab3");
-        tabSpec.setIndicator("Очень срочно");
-        tabSpec.setContent(R.id.yellowBlock);
+        tabSpec.setIndicator("Заметки");
+        tabSpec.setContent(R.id.noteTab);
         tabHost.addTab(tabSpec);
 
 // Установка первой вкладки активной
@@ -139,9 +140,9 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
-        LinearLayout linearLayoutNESROCHNO = findViewById(R.id.linearLayoutBlue);
-        LinearLayout linearLayoutSROCHNO = findViewById(R.id.linearLayoutGreen);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) LinearLayout linearLayoutVERYSROCHNO = findViewById(R.id.linearLayoutYellow);
+        LinearLayout linearLayoutTasks = findViewById(R.id.linearLayoutTask);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) LinearLayout linearLayoutNotes = findViewById(R.id.linearLayoutNote);
+//        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) LinearLayout linearLayoutVERYSROCHNO = findViewById(R.id.linearLayoutYellow);
 
 //        setObjectInInterface("ЗАДАЧА_НОМЕР_1", linearLayoutNESROCHNO);
 //        setObjectInInterface("ЗАДАЧА_НОМЕР_2", linearLayoutSROCHNO);
@@ -153,16 +154,14 @@ public class MainActivity extends AppCompatActivity {
         List<ObjectParams> listActiveItems = JsonFile.getValues(getApplicationContext(), "active");
         assert listActiveItems != null;
         for (ObjectParams item: listActiveItems){
-            LinearLayout priority = null;
-            if (Objects.equals(item.getPriority(), priorityEasy)){
-                priority = linearLayoutNESROCHNO;
-            } else if (Objects.equals(item.getPriority(), priorityMedium)) {
-                priority = linearLayoutSROCHNO;
-            } else if (Objects.equals(item.getPriority(), priorityHard)) {
-                priority = linearLayoutVERYSROCHNO;
+            LinearLayout objectType = null;
+            if (Objects.equals(item.getDate(), null) || Objects.equals(item.getTime(), null)){
+                objectType = linearLayoutNotes;
+            } else {
+                objectType = linearLayoutTasks;
             }
-            assert priority != null;
-            setObjectInInterface(item, priority);
+            assert objectType != null;
+            setObjectInInterface(item, objectType);
         }
 
 
@@ -198,27 +197,28 @@ public class MainActivity extends AppCompatActivity {
         int targetHeight = 100; // Здесь можно установить целевую высоту строки
         row2.getLayoutParams().height = 0; // устанавливаем начальную высоту строки равной 0
         row2.requestLayout();
-        ValueAnimator animator = ValueAnimator.ofInt(0, targetHeight); // создаем аниматор для изменения высоты
+        @SuppressLint("Recycle") ValueAnimator animator = ValueAnimator.ofInt(0, targetHeight); // создаем аниматор для изменения высоты
         animator.setDuration(3000); // задаем продолжительность анимации
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                int value = (int) animation.getAnimatedValue(); // получаем текущее значение анимации
-                row2.getLayoutParams().height = value; // устанавливаем новую высоту строки
+                row2.getLayoutParams().height = (int) animation.getAnimatedValue(); // устанавливаем новую высоту строки
                 row2.requestLayout();
             }
         });
 
-// Установка продолжительности анимации
-//        animation.setDuration(3000); // Здесь можно установить желаемую продолжительность анимации
+        // Установка продолжительности анимации
+        //        animation.setDuration(3000); // Здесь можно установить желаемую продолжительность анимации
 
-// Запуск анимации по нажатию на кнопку
+        // Запуск анимации по нажатию на кнопку
         ImageButton button = scrollViewView.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                row2.setVisibility(View.VISIBLE); // Показывает вторую строку перед запуском анимации
-                animator.start(); // Запускает анимацию изменения высоты строки
+        @SuppressLint("CutPasteId") TableRow row21 = scrollViewView.findViewById(R.id.row2);
+        row21.setVisibility(View.INVISIBLE);
+        button.setOnClickListener(v -> {
+            if (row21.getVisibility() == View.INVISIBLE) {
+                row21.setVisibility(View.VISIBLE); // Становится видимым, если до этого было невидимым
+            } else {
+                row21.setVisibility(View.INVISIBLE); // Становится невидимым, если до этого было видимым
             }
         });
 
