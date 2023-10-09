@@ -78,7 +78,29 @@ public class MainActivity extends AppCompatActivity {
         tabHost.addTab(tabSpec);
 
 // Установка первой вкладки активной
-        tabHost.setCurrentTab(0);
+        tabHost.setCurrentTab(1);
+
+        ImageButton addButton = findViewById(R.id.addButton);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Получаем активный таб
+                TabHost tabHost = findViewById(android.R.id.tabhost);
+                int currentTab = tabHost.getCurrentTab();
+
+                // Открываем новое окно (Activity)
+                Intent intent = new Intent(MainActivity.this, ActivityAddMaster.class);
+
+                // Передаем информацию об активном табе
+                if (currentTab == 1) {
+                    intent.putExtra("text", "таск");
+                } else {
+                    intent.putExtra("text", "ноте");
+                }
+
+                startActivity(intent);
+            }
+        });
 
 //        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView errorTextView = findViewById(R.id.infoLabel); // Идентификатор текстового поля
 
