@@ -1,64 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="10dp">
 
     <TextView
         android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Заголовок" />
+        android:text="###" />
 
-    <TextView
-        android:id="@+id/titleTextView"
+    <EditText
+        android:id="@+id/titleEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Заголовок" />
+        android:hint="Заголовок"
+        tools:ignore="RtlHardcoded" />
 
     <EditText
         android:id="@+id/contentEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Контент" />
+        android:layout_height="259dp"
+        android:hint="Контент"
+        android:gravity="top|left"
+        android:textAlignment="textStart"
+        tools:ignore="RtlCompat,RtlHardcoded" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/dateTextView"
+        <Button
+            android:id="@+id/dateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Дата:" />
+            android:text="Выбрать дату" />
 
-        <EditText
-            android:id="@+id/dateEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="дд/мм/гггг" />
-
-        <TextView
-            android:id="@+id/timeTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Время:" />
-
-        <EditText
-            android:id="@+id/timeEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="чч:мм" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/timeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Выбрать время" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/contentDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:hint="дата"
+            android:inputType="date" />
+
+        <EditText
+            android:id="@+id/contentHour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="часы"
+            android:inputType="number" />
+        <TextView
+            android:id="@+id/spec"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=":" />
+
+        <EditText
+            android:id="@+id/contentMinute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="минуты"
+            android:inputType="number"/>
+    </LinearLayout>
+
 
     <Spinner
         android:id="@+id/prioritySpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:entries="@array/priority_array" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/okButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="Ок" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Отмена" />
+    </LinearLayout>
 
 </LinearLayout>
