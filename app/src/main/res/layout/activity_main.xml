@@ -59,7 +59,7 @@
                 android:id="@+id/taskTab"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/purple_200"
+                android:background="#011353"
                 android:orientation="vertical">
 
                 <TextView
@@ -90,7 +90,7 @@
                 android:id="@+id/noteTab"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/holo_orange_light"
+                android:background="#011353"
                 android:orientation="vertical">
 
                 <TextView
@@ -129,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="29dp"
                     android:layout_marginBottom="29dp"
-                    app:cardBackgroundColor="#FF0303"
+                    app:cardBackgroundColor="#0342FF"
                     app:cardCornerRadius="1000dp"
                     app:cardElevation="0dp">
 
