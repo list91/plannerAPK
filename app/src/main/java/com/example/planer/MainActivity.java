@@ -1,15 +1,20 @@
 package com.example.planer;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.Button;
@@ -18,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,14 +50,30 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 public class MainActivity extends AppCompatActivity {
-    public String priorityHard = "очень срочно";
-    public String priorityMedium = "срочно";
-    public String priorityEasy = "не срочно";
 
+    private ActivityResultLauncher<Intent> launcher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    // перезапуск если возвращаемся к списку задач
+//                    Intent intent = getIntent();
+//                    finish();
+//                    startActivity(intent);
+                    updateListScreen(getApplicationContext());
+                    // Обработка результата активности здесь
+//                    if (result.getResultCode() == RESULT_OK) {
+//                        // Результат успешный
+//                        Intent data = result.getData();
+//
+//                    } else {
+//                        // Результат неудачный
+//                    }
+                });
+
         Context context = getApplicationContext();
         Objects.requireNonNull(getSupportActionBar()).hide();
 
@@ -82,79 +104,45 @@ public class MainActivity extends AppCompatActivity {
         tabHost.setCurrentTab(1);
 
         ImageButton addButton = findViewById(R.id.addButton);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Получаем активный таб
-                TabHost tabHost = findViewById(android.R.id.tabhost);
-                int currentTab = tabHost.getCurrentTab();
+        addButton.setOnClickListener(v -> {
+            // Получаем активный таб
+            @SuppressLint("CutPasteId") TabHost tabHost1 = findViewById(android.R.id.tabhost);
+            int currentTab = tabHost1.getCurrentTab();
 
-                // Открываем новое окно (Activity)
-                Intent intent = new Intent(MainActivity.this, ActivityAddMaster.class);
+            // Открываем новое окно (Activity)
+            Intent intent = new Intent(MainActivity.this, ActivityAddMaster.class);
 
-                // Передаем информацию об активном табе
-                if (currentTab == 1) {
-                    intent.putExtra("text", "таск");
-                } else {
-                    intent.putExtra("text", "ноте");
-                }
-
-                startActivity(intent);
+// Передаем информацию об активном табе
+            if (currentTab == 1) {
+                intent.putExtra("text", "таск");
+            } else {
+                intent.putExtra("text", "ноте");
             }
+
+            launcher.launch(intent);
         });
 
-//        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView errorTextView = findViewById(R.id.infoLabel); // Идентификатор текстового поля
+//        try {
+//            TableExcel.test();
+//        } catch (IOException e) {
+//            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"+e+"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+//            throw new RuntimeException(e);
+//        }
 
-        JsonFile.createDefaultOutJsonFile(getApplicationContext());
-
-        ObjectParams objectParams = new ObjectParams("23.12.23", "23:33", "помыть посуду", "помой посуду хорошо", "без категории", priorityHard, null);
-        Object newObject = new Object(getApplicationContext(), objectParams);
-
-        objectParams = new ObjectParams(null, null, "помыть посуду", "помой посуду хорошо", "без категории", priorityMedium, null);
-        Object newObject2 = new Object(getApplicationContext(), objectParams);
-
-        objectParams = new ObjectParams("23.12.23", "23:33", "помыть посуду", "помой посуду хорошо", "без категории", priorityEasy, null);
-        Object newObject3 = new Object(getApplicationContext(), objectParams);
-
-        objectParams = new ObjectParams(null, null, "помыть посуду", "помой посуду хорошо", "без категории", priorityEasy, null);
-        Object newObject4 = new Object(getApplicationContext(), objectParams);
-
-        objectParams = new ObjectParams("23.12.23", "23:33", "помыть посуду", "помой посуду хорошо", "без категории", priorityMedium, null);
-        Object newObject5 = new Object(getApplicationContext(), objectParams);
-
-        objectParams = new ObjectParams(null, null, "помыть посуду", "помой посуду хорошо", "без категории", priorityEasy, null);
-        Object newObject6 = new Object(getApplicationContext(), objectParams);
-
-        objectParams = new ObjectParams(null, null, "помыть посуду", "помой посуду хорошо", "без категории", priorityEasy, null);
-        Object newObject7 = new Object(getApplicationContext(), objectParams);
-
-        try {
-            newObject.writeObject();
-        newObject2.writeObject();
-        newObject3.writeObject();
-        newObject4.writeObject();
-        newObject5.writeObject();
-        newObject6.writeObject();
-        newObject7.writeObject();
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
+        updateListScreen(getApplicationContext());
+        // Вызов AsyncTask для выполнения метода test() асинхронно
+//        TableExcelAsyncTask asyncTask = new TableExcelAsyncTask();
+//        asyncTask.execute();
+    }
+    public void updateListScreen(Context context){
         LinearLayout linearLayoutTasks = findViewById(R.id.linearLayoutTask);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) LinearLayout linearLayoutNotes = findViewById(R.id.linearLayoutNote);
-//        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) LinearLayout linearLayoutVERYSROCHNO = findViewById(R.id.linearLayoutYellow);
-
-//        setObjectInInterface("ЗАДАЧА_НОМЕР_1", linearLayoutNESROCHNO);
-//        setObjectInInterface("ЗАДАЧА_НОМЕР_2", linearLayoutSROCHNO);
-//        setObjectInInterface("ЗАДАЧА_НОМЕР_3", linearLayoutVERYSROCHNO);
-//        setObjectInInterface("ЗАДАЧА_НОМЕР_4", linearLayoutNESROCHNO);
-
-//        JSONObject values = JsonFile.getValue(context,"active", "notes" ,"1");
-//        System.out.println(values);
-        List<ObjectParams> listActiveItems = JsonFile.getValues(getApplicationContext(), "active");
+        linearLayoutTasks.removeAllViews();
+        linearLayoutNotes.removeAllViews();
+        List<ObjectParams> listActiveItems = JsonFile.getValues(context, "active");
         assert listActiveItems != null;
         for (ObjectParams item: listActiveItems){
-            LinearLayout objectType = null;
+            LinearLayout objectType;
             if (Objects.equals(item.getDate(), null) || Objects.equals(item.getTime(), null)){
                 objectType = linearLayoutNotes;
             } else {
@@ -163,22 +151,9 @@ public class MainActivity extends AppCompatActivity {
             assert objectType != null;
             setObjectInInterface(item, objectType);
         }
-
-
-
-//        for (JSONObject value: values){
-
-//        }
-//        System.out.println("########### "+values);
-//        errorTextView.setText((CharSequence) value);
-
-//        JsonFileOut.changeValueByKey(getApplicationContext(),"tasks", "testValue");
     }
     public void setObjectInInterface(ObjectParams objectParams, LinearLayout thisLinearLayout) {
-        // Получаем доступ к корневому LinearLayout в activity_main.xml
-//        LinearLayout linearLayout = findViewById(R.id.linearLayoutGreen);
 
-        // Создаем LayoutInflater для загрузки разметки из item_scroll_view.xml
         LayoutInflater inflater = LayoutInflater.from(this);
         View scrollViewView = inflater.inflate(R.layout.item_scroll_view, (ViewGroup) thisLinearLayout, false);
 
@@ -186,44 +161,49 @@ public class MainActivity extends AppCompatActivity {
         @SuppressLint({"CutPasteId", "MissingInflatedId", "LocalSuppress"}) TextView textViewTitle = scrollViewView.findViewById(R.id.labelTitle);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView textViewDescription = scrollViewView.findViewById(R.id.labelDescription);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView textViewDate = scrollViewView.findViewById(R.id.labelDateTime);
-//        @SuppressLint("CutPasteId") TextView textViewTime = scrollViewView.findViewById(R.id.timeLabel);
 
         textViewTitle.setText(objectParams.getTitle());
-//        textViewDescription.setText(objectParams.getContent());
+        textViewDescription.setText(objectParams.getContent());
         textViewDate.setText(objectParams.getDate());
-//        textViewTime.setText(objectParams.getTime());
 
         TableRow row2 = scrollViewView.findViewById(R.id.row2);
-        int targetHeight = 100; // Здесь можно установить целевую высоту строки
+//        int targetHeight = 100; // Здесь можно установить целевую высоту строки
         row2.getLayoutParams().height = 0; // устанавливаем начальную высоту строки равной 0
         row2.requestLayout();
-        @SuppressLint("Recycle") ValueAnimator animator = ValueAnimator.ofInt(0, targetHeight); // создаем аниматор для изменения высоты
-        animator.setDuration(3000); // задаем продолжительность анимации
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                row2.getLayoutParams().height = (int) animation.getAnimatedValue(); // устанавливаем новую высоту строки
-                row2.requestLayout();
-            }
-        });
+//        @SuppressLint("Recycle") ValueAnimator animator = ValueAnimator.ofInt(0, targetHeight); // создаем аниматор для изменения высоты
 
-        // Установка продолжительности анимации
-        //        animation.setDuration(3000); // Здесь можно установить желаемую продолжительность анимации
 
-        // Запуск анимации по нажатию на кнопку
+
         ImageButton button = scrollViewView.findViewById(R.id.button);
-        @SuppressLint("CutPasteId") TableRow row21 = scrollViewView.findViewById(R.id.row2);
-        row21.setVisibility(View.INVISIBLE);
+        @SuppressLint("CutPasteId") TextView row21 = scrollViewView.findViewById(R.id.labelDescription);
         button.setOnClickListener(v -> {
-            if (row21.getVisibility() == View.INVISIBLE) {
-                row21.setVisibility(View.VISIBLE); // Становится видимым, если до этого было невидимым
+            if (row21.getHeight() == 0) {
+                // Устанавливаем временно максимальную высоту строки
+                row21.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                row21.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                int targetHeight = row21.getMeasuredHeight(); // Получаем фактическую высоту строки
+                row21.getLayoutParams().height = 0; // Устанавливаем обратно высоту строки в 0
+
+                ValueAnimator animator = ValueAnimator.ofInt(0, targetHeight);
+                animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                animator.addUpdateListener(animation -> {
+                    int value = (int) animation.getAnimatedValue();
+                    row21.getLayoutParams().height = value;
+                    row21.requestLayout();
+                });
+                animator.start();
             } else {
-                row21.setVisibility(View.INVISIBLE); // Становится невидимым, если до этого было видимым
+                int targetHeight = 0;
+                ValueAnimator animator = ValueAnimator.ofInt(row21.getHeight(), targetHeight);
+                animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                animator.addUpdateListener(animation -> {
+                    int value = (int) animation.getAnimatedValue();
+                    row21.getLayoutParams().height = value;
+                    row21.requestLayout();
+                });
+                animator.start();
             }
         });
-
-//        textView.setText(txt);
-
         // Добавляем загруженную разметку в LinearLayout
         thisLinearLayout.addView(scrollViewView);
     }
