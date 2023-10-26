@@ -3,16 +3,22 @@ package com.example.planer;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONException;
 
 import java.util.Calendar;
 import java.util.Objects;
@@ -24,30 +30,58 @@ public class ActivityAddMaster extends AppCompatActivity {
     private EditText hour;
     private EditText date;
     private EditText minute;
+    private boolean isTask;
+    private MainActivity mainActivity;
 
+    @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_master);
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Создание (подставить задча или заметка)");
+
 
         Button buttonOk = findViewById(R.id.okButton);
         buttonOk.setOnClickListener(event -> {
             // Создается если есть ДАТА ; ВРЕМЯ ; ЗАГОЛОВОК ; ПРИОРИТЕТ
-            System.out.println("######################################################");
             EditText title = findViewById(R.id.titleEditText);
+            EditText content = findViewById(R.id.contentEditText);
 //            EditText description = findViewById(R.id.contentEditText);
-            EditText h = findViewById(R.id.contentHour);
-            EditText m = findViewById(R.id.contentMinute);
-            EditText d = findViewById(R.id.contentDate);
+            @SuppressLint("CutPasteId") EditText h = findViewById(R.id.contentHour);
+            @SuppressLint("CutPasteId") EditText m = findViewById(R.id.contentMinute);
+            @SuppressLint("CutPasteId") EditText d = findViewById(R.id.contentDate);
+
 
             // TODO когда нибудь сделай проверку на схожесть даты с определенной маской и чтобы дата была не ранее текущей
-            if (title.getText().length() != 0 &&
-                h.getText().length() != 0 &&
-                d.getText().length() != 0 &&
-                m.getText().length() != 0){
-                // тут идет создание (пока тут не включен ПРИОРИТЕТ)
+            if (title.getText().length() != 0){
+                String time;
+                String date;
+                if(h.getText().length() != 0 && d.getText().length() != 0 && m.getText().length() != 0 && isTask){
+
+                    date = d.getText().toString();
+                    time = h.getText().toString()+":"+m.getText().toString();
+                } else {
+                    date = null;
+                    time = null;
+                }
+                // тут идет создание
+                String ttle = title.getText().toString();
+                Spinner spin = findViewById(R.id.prioritySpinner);
+                String selectedItem = spin.getSelectedItem().toString();
+                System.out.println("######################################################");
+//                System.out.println(defaultSelection);
+
+                ObjectParams objectParams = new ObjectParams(date, time, ttle, content.getText().toString(), "no category", selectedItem, null);
+                Object newObject = new Object(this, objectParams);
+                try {
+                    newObject.writeObject();
+                    closeActivity();
+
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+
             }else{
                 // тут вывод ошибки что чего то не хватает
             }
@@ -70,6 +104,19 @@ public class ActivityAddMaster extends AppCompatActivity {
         TextView textView = findViewById(R.id.title);
         textView.setText(text);
 
+        CheckBox checkBoxTask = findViewById(R.id.is_task);
+        checkBoxTask.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isTask = isChecked;
+            if (!isTask) {
+                Objects.requireNonNull(getSupportActionBar()).setTitle("Новая заметка");
+                setEnabled(false);
+            } else {
+                Objects.requireNonNull(getSupportActionBar()).setTitle("Новая задача");
+                setEnabled(true);
+            }
+        });
+        isTask = checkBoxTask.isActivated();
+
 
         timeButton = findViewById(R.id.timeButton);
         timeButton.setOnClickListener(v -> showTimePickerDialog());
@@ -77,6 +124,20 @@ public class ActivityAddMaster extends AppCompatActivity {
         dateButton = findViewById(R.id.dateButton);
         dateButton.setOnClickListener(v -> showDatePickerDialog());
 
+        if (!isTask) {
+            Objects.requireNonNull(getSupportActionBar()).setTitle("Новая заметка");
+            setEnabled(false);
+        } else {
+            Objects.requireNonNull(getSupportActionBar()).setTitle("Новая задача");
+            setEnabled(true);
+        }
+    }
+    public void setEnabled(boolean flag){
+        dateButton.setEnabled(flag);
+        timeButton.setEnabled(flag);
+        date.setEnabled(flag);
+        hour.setEnabled(flag);
+        minute.setEnabled(flag);
     }
     private void showDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
@@ -109,4 +170,8 @@ public class ActivityAddMaster extends AppCompatActivity {
 
         timePickerDialog.show();
     }
+    private void closeActivity() {
+        finish();
+    }
+
 }
